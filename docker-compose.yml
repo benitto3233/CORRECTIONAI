@@ -1,0 +1,104 @@
+version: '3.8'
+
+services:
+  # Backend API Service
+  backend:
+    build: ./home/ubuntu/correcte-ai/backend
+    container_name: correcte-ai-backend
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    environment:
+      - NODE_ENV=production
+      - PORT=5000
+      - MONGODB_URI=mongodb://mongodb:27017/correcte-ai
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_EXPIRATION=7d
+      - REDIS_URI=redis://redis:6379
+      - RABBITMQ_URI=amqp://rabbitmq:5672
+      - AI_API_KEY=${AI_API_KEY}
+      - EMAIL_HOST=${EMAIL_HOST}
+      - EMAIL_PORT=${EMAIL_PORT}
+      - EMAIL_USER=${EMAIL_USER}
+      - EMAIL_PASS=${EMAIL_PASS}
+      - EMAIL_FROM=noreply@correcte-ai.com
+    depends_on:
+      - mongodb
+      - redis
+      - rabbitmq
+    volumes:
+      - ./home/ubuntu/correcte-ai/backend/uploads:/app/uploads
+      - ./home/ubuntu/correcte-ai/backend/logs:/app/logs
+
+  # Frontend Service
+  frontend:
+    build: ./home/ubuntu/correcte-ai/frontend
+    container_name: correcte-ai-frontend
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - backend
+    volumes:
+      - ./ssl:/etc/nginx/ssl
+
+  # MongoDB Database
+  mongodb:
+    image: mongo:5
+    container_name: correcte-ai-mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_ROOT_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_ROOT_PASSWORD}
+
+  # Redis for Caching
+  redis:
+    image: redis:7-alpine
+    container_name: correcte-ai-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+
+  # RabbitMQ for Task Queue
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: correcte-ai-rabbitmq
+    restart: unless-stopped
+    ports:
+      - "5672:5672"   # AMQP port
+      - "15672:15672" # Management UI
+    environment:
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_USER}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASS}
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+
+  # MongoDB Express (Admin UI)
+  mongo-express:
+    image: mongo-express
+    container_name: correcte-ai-mongo-express
+    restart: unless-stopped
+    ports:
+      - "8081:8081"
+    environment:
+      - ME_CONFIG_MONGODB_SERVER=mongodb
+      - ME_CONFIG_MONGODB_PORT=27017
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=${MONGO_ROOT_USERNAME}
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=${MONGO_ROOT_PASSWORD}
+      - ME_CONFIG_BASICAUTH_USERNAME=${MONGO_EXPRESS_USER}
+      - ME_CONFIG_BASICAUTH_PASSWORD=${MONGO_EXPRESS_PASS}
+    depends_on:
+      - mongodb
+
+volumes:
+  mongodb_data:
+  redis_data:
+  rabbitmq_data:

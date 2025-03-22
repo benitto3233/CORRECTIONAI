@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rapport hebdomadaire: {{weekRange}}</title>
+  <style>
+    body {
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .header {
+      text-align: center;
+      padding: 20px 0;
+      border-bottom: 1px solid #eee;
+    }
+    .logo {
+      max-width: 200px;
+    }
+    .content {
+      padding: 20px 0;
+    }
+    .button {
+      display: inline-block;
+      background-color: #5469d4;
+      color: white;
+      text-decoration: none;
+      padding: 12px 25px;
+      border-radius: 4px;
+      margin: 20px 0;
+      font-weight: bold;
+    }
+    .footer {
+      padding-top: 20px;
+      border-top: 1px solid #eee;
+      text-align: center;
+      font-size: 12px;
+      color: #666;
+    }
+    .stats-card {
+      background-color: #f9f9f9;
+      padding: 15px;
+      border-radius: 4px;
+      margin: 20px 0;
+    }
+    .stats-title {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 15px;
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-gap: 15px;
+    }
+    .stats-item {
+      background-color: white;
+      padding: 15px;
+      border-radius: 4px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .stats-value {
+      font-size: 24px;
+      font-weight: bold;
+      color: #5469d4;
+      margin: 5px 0;
+    }
+    .stats-label {
+      font-size: 14px;
+      color: #666;
+    }
+    .stats-change {
+      font-size: 12px;
+    }
+    .change-positive {
+      color: #0a8f0a;
+    }
+    .change-negative {
+      color: #e63b3b;
+    }
+    .recent-activity {
+      margin: 20px 0;
+    }
+    .activity-item {
+      padding: 10px 0;
+      border-bottom: 1px solid #eee;
+    }
+    .chart-placeholder {
+      height: 150px;
+      background-color: #f0f0f0;
+      border-radius: 4px;
+      margin: 20px 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #666;
+    }
+    .recommendation {
+      background-color: #f0f7ff;
+      border-left: 4px solid #5469d4;
+      padding: 15px;
+      margin: 20px 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <img src="https://correcte-ai.com/logo.png" alt="Correcte-AI Logo" class="logo">
+  </div>
+  
+  <div class="content">
+    <h1>Votre rapport hebdomadaire</h1>
+    
+    <p>Bonjour {{teacherName}},</p>
+    
+    <p>Voici votre rapport d'activitu00e9 pour la pu00e9riode du <strong>{{startDate}}</strong> au <strong>{{endDate}}</strong>.</p>
+    
+    <div class="stats-card">
+      <div class="stats-title">Ru00e9sumu00e9 de la semaine</div>
+      <div class="stats-grid">
+        <div class="stats-item">
+          <div class="stats-label">Travaux corrigu00e9s</div>
+          <div class="stats-value">{{weeklyStats.submissionsGraded}}</div>
+          <div class="stats-change {{#if weeklyStats.submissionsGradedChangePositive}}change-positive{{else}}change-negative{{/if}}">
+            {{weeklyStats.submissionsGradedChange}}% par rapport u00e0 la semaine derniu00e8re
+          </div>
+        </div>
+        <div class="stats-item">
+          <div class="stats-label">Temps u00e9conomisu00e9</div>
+          <div class="stats-value">{{weeklyStats.timeSavedHours}} h</div>
+          <div class="stats-change change-positive">{{weeklyStats.timeSavedValue}}€ de temps u00e9conomisu00e9</div>
+        </div>
+        <div class="stats-item">
+          <div class="stats-label">Note moyenne</div>
+          <div class="stats-value">{{weeklyStats.averageGrade}}/10</div>
+          <div class="stats-change">
+            {{#if weeklyStats.totalStudents}}{{weeklyStats.totalStudents}} u00e9lu00e8ves{{/if}}
+          </div>
+        </div>
+        <div class="stats-item">
+          <div class="stats-label">Pru00e9cision des corrections</div>
+          <div class="stats-value">{{weeklyStats.aiAccuracy}}%</div>
+          <div class="stats-change {{#if weeklyStats.aiAccuracyChangePositive}}change-positive{{else}}change-negative{{/if}}">
+            {{weeklyStats.aiAccuracyChange}}% par rapport u00e0 la semaine derniu00e8re
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <h2>Ru00e9partition des notes</h2>
+    <div class="chart-placeholder">
+      [Graphique de ru00e9partition des notes - Consultez le rapport complet sur le tableau de bord]
+    </div>
+    
+    <h2>Activitu00e9s ru00e9centes</h2>
+    <div class="recent-activity">
+      {{#each recentActivities}}
+      <div class="activity-item">
+        <strong>{{this.date}}</strong> - {{this.description}}
+      </div>
+      {{/each}}
+    </div>
+    
+    {{#if recommendations.length}}
+    <h2>Recommandations personnalisu00e9es</h2>
+    {{#each recommendations}}
+    <div class="recommendation">
+      <strong>{{this.title}}</strong>
+      <p>{{this.description}}</p>
+      {{#if this.actionUrl}}
+      <a href="{{this.actionUrl}}">{{this.actionText}}</a>
+      {{/if}}
+    </div>
+    {{/each}}
+    {{/if}}
+    
+    <p>Pour consulter votre rapport complet et accéder à des analyses plus détaillées, visitez votre tableau de bord :</p>
+    
+    <a href="{{dashboardUrl}}" class="button">Voir mon tableau de bord</a>
+    
+    <p>Nous espérons que Correcte-AI continue de vous faire gagner du temps et d'améliorer votre expérience d'enseignement. N'hésitez pas à nous faire part de vos commentaires pour nous aider à améliorer notre service.</p>
+    
+    <p>Cordialement,<br>
+    L'équipe Correcte-AI</p>
+  </div>
+  
+  <div class="footer">
+    <p>© {{currentYear}} Correcte-AI. Tous droits réservés.</p>
+    <p>Vous recevez ce rapport car vous avez activé les rapports hebdomadaires dans vos préférences.</p>
+    <p>
+      <a href="{{emailPreferencesUrl}}">Gérer mes notifications</a> |
+      <a href="{{unsubscribeUrl}}">Me désabonner des rapports</a>
+    </p>
+  </div>
+</body>
+</html>

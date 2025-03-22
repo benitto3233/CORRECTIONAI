@@ -1,0 +1,81 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, ux-improvements, technical-optimization, new-functionality, security-enhancements, metrics-implementation ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        node-version: [16.x]
+    
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v2
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+    
+    - name: Install frontend dependencies
+      run: |
+        cd frontend
+        npm ci
+    
+    - name: Build frontend
+      run: |
+        cd frontend
+        npm run build
+    
+    - name: Test frontend
+      run: |
+        cd frontend
+        npm test
+    
+    - name: Install backend dependencies
+      run: |
+        cd backend
+        npm ci
+    
+    - name: Test backend
+      run: |
+        cd backend
+        npm test
+    
+  deploy-staging:
+    needs: build-and-test
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || contains(github.ref, 'refs/heads/release-'))
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+    
+    - name: Build and push Docker images
+      run: |
+        docker-compose build
+        # Commande de déploiement vers l'environnement de staging
+        # Cette commande serait remplacée par votre processus de déploiement réel
+        echo "Déploiement vers l'environnement de staging"
+    
+  deploy-production:
+    needs: deploy-staging
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Deploy to production
+      run: |
+        # Commande de déploiement vers l'environnement de production
+        # Cette commande serait remplacée par votre processus de déploiement réel
+        echo "Déploiement vers l'environnement de production"

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Correction terminu00e9e: {{assignmentTitle}}</title>
+  <style>
+    body {
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .header {
+      text-align: center;
+      padding: 20px 0;
+      border-bottom: 1px solid #eee;
+    }
+    .logo {
+      max-width: 200px;
+    }
+    .content {
+      padding: 20px 0;
+    }
+    .button {
+      display: inline-block;
+      background-color: #5469d4;
+      color: white;
+      text-decoration: none;
+      padding: 12px 25px;
+      border-radius: 4px;
+      margin: 20px 0;
+      font-weight: bold;
+    }
+    .footer {
+      padding-top: 20px;
+      border-top: 1px solid #eee;
+      text-align: center;
+      font-size: 12px;
+      color: #666;
+    }
+    .stats {
+      background-color: #f9f9f9;
+      padding: 15px;
+      border-radius: 4px;
+      margin: 20px 0;
+    }
+    .stats-item {
+      margin-bottom: 10px;
+    }
+    .stats-label {
+      font-weight: bold;
+    }
+    .stats-value {
+      float: right;
+    }
+    .progress-bar {
+      background-color: #eee;
+      border-radius: 4px;
+      height: 10px;
+      margin-top: 5px;
+      overflow: hidden;
+    }
+    .progress-value {
+      background-color: #5469d4;
+      height: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <img src="https://correcte-ai.com/logo.png" alt="Correcte-AI Logo" class="logo">
+  </div>
+  
+  <div class="content">
+    <h1>Correction terminu00e9e: {{assignmentTitle}}</h1>
+    
+    <p>Bonjour {{teacherName}},</p>
+    
+    <p>Nous sommes heureux de vous informer que la correction de <strong>{{assignmentTitle}}</strong> a u00e9tu00e9 terminu00e9e avec succu00e8s!</p>
+    
+    <div class="stats">
+      <div class="stats-item">
+        <span class="stats-label">Soumissions corrigu00e9es:</span>
+        <span class="stats-value">{{submissionsCount}}/{{totalSubmissions}}</span>
+        <div class="progress-bar">
+          <div class="progress-value" style="width: {{completionPercentage}}%"></div>
+        </div>
+      </div>
+      <div class="stats-item">
+        <span class="stats-label">Moyenne de la classe:</span>
+        <span class="stats-value">{{classAverage}}%</span>
+      </div>
+      <div class="stats-item">
+        <span class="stats-label">Temps u00e9conomisu00e9:</span>
+        <span class="stats-value">{{timeSaved}} minutes</span>
+      </div>
+    </div>
+    
+    {{#if insights}}
+    <h2>Insights sur la classe</h2>
+    <ul>
+      {{#each insights}}
+      <li>{{this}}</li>
+      {{/each}}
+    </ul>
+    {{/if}}
+    
+    <p>Pour consulter les ru00e9sultats du00e9taillu00e9s et les u00e9ventuels ajustements nu00e9cessaires, veuillez cliquer sur le bouton ci-dessous :</p>
+    
+    <a href="{{resultsUrl}}" class="button">Voir les ru00e9sultats du00e9taillu00e9s</a>
+    
+    <p>Merci d'utiliser Correcte-AI pour simplifier votre processus de correction et d'avoir plus de temps pour ce qui compte vraiment : l'enseignement et l'accompagnement de vos u00e9lu00e8ves.</p>
+    
+    <p>Cordialement,<br>
+    L'u00e9quipe Correcte-AI</p>
+  </div>
+  
+  <div class="footer">
+    <p>u00a9 {{currentYear}} Correcte-AI. Tous droits ru00e9servu00e9s.</p>
+    <p>Vous recevez cet email car vous utilisez Correcte-AI pour la correction de travaux.</p>
+    <p>
+      <a href="{{emailPreferencesUrl}}">Gu00e9rer mes notifications</a> |
+      <a href="{{helpCenterUrl}}">Centre d'aide</a>
+    </p>
+  </div>
+</body>
+</html>
